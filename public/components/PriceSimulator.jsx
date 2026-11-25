@@ -6,8 +6,9 @@ import {
   formatSimulatedUsd,
   formatSimulatedVes,
 } from '../lib/pricing.js';
+import { createTelegramPurchaseUrl, DEFAULT_TELEGRAM_USERNAME } from '../lib/telegram.js';
 
-export default function PriceSimulator({ simulation = DEFAULT_PRICE_SIMULATION, loadError = '', onRetry }) {
+export default function PriceSimulator({ simulation = DEFAULT_PRICE_SIMULATION, loadError = '', onRetry, telegramUsername = import.meta.env.VITE_TELEGRAM_USERNAME || DEFAULT_TELEGRAM_USERNAME }) {
   const [rate, setRate] = useState(String(simulation.rate));
   useEffect(() => setRate(String(simulation.rate)), [simulation.rate]);
   const numericRate = Number(rate);
@@ -34,6 +35,7 @@ export default function PriceSimulator({ simulation = DEFAULT_PRICE_SIMULATION, 
       <div className="simulated-price-grid">
         {simulation.services.map((service) => {
           const estimatedVes = validRate ? calculateSimulatedVes(service.monthlyUsdCents, numericRate) : null;
+          const telegramUrl = createTelegramPurchaseUrl(telegramUsername, service.name);
           return (
             <article className="simulated-price-card" key={service.name}>
               <div className="simulated-price-top"><span className="service-monogram" aria-hidden="true">{service.name.slice(0, 2).toUpperCase()}</span><span className="simulation-badge">Simulación</span></div>
@@ -41,6 +43,7 @@ export default function PriceSimulator({ simulation = DEFAULT_PRICE_SIMULATION, 
               <h3>{service.name}</h3>
               <p><span>Base hipotética</span><strong>{formatSimulatedUsd(service.monthlyUsdCents)}</strong></p>
               <p className="simulated-ves"><span>Conversión estimada</span><strong>{estimatedVes === null ? '—' : formatSimulatedVes(estimatedVes)}</strong></p>
+              {telegramUrl && <a className="simulated-price-link" href={telegramUrl} target="_blank" rel="noopener noreferrer" aria-label={`Consultar disponibilidad de ${service.name} por Telegram`}>Consultar disponibilidad <span aria-hidden="true">↗</span></a>}
             </article>
           );
         })}

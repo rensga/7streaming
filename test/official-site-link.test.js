@@ -54,6 +54,69 @@ describe('contacto de compra por Telegram', () => {
     }
   });
 
+  it('ofrece desde la tarjeta del catálogo consultar por Telegram el servicio seleccionado', async () => {
+    const vite = await createServer({
+      configFile: path.join(ROOT, 'vite.config.js'),
+      server: { middlewareMode: true },
+      appType: 'custom',
+    });
+
+    try {
+      const { default: ServiceCard } = await vite.ssrLoadModule('/components/ServiceCard.jsx');
+      const markup = renderToStaticMarkup(createElement(ServiceCard, {
+        service: {
+          id: '0123456789abcdef',
+          slug: 'canva-pro',
+          name: 'Canva Pro',
+          category: 'Diseño',
+          status: 'active',
+          isFeatured: false,
+          shortDescription: 'Herramientas creativas.',
+          priceAmount: 1200,
+          currency: 'USD',
+        },
+        telegramUsername: '@rensgaaa',
+      }));
+      const telegramHref = markup.match(/href="(https:\/\/t\.me\/[^\"]+)"/)?.[1];
+      assert.ok(telegramHref);
+      assert.equal(new URL(telegramHref).pathname, '/rensgaaa');
+      assert.match(new URL(telegramHref).searchParams.get('text'), /Canva Pro/);
+      assert.match(markup, /target="_blank"/);
+      assert.match(markup, /rel="noopener noreferrer"/);
+      assert.match(markup, /href="\/catalogo\/0123456789abcdef:canva-pro"/);
+    } finally {
+      await vite.close();
+    }
+  });
+
+  it('permite consultar por Telegram desde una tarjeta de simulación sin presentar el precio como oferta', async () => {
+    const vite = await createServer({
+      configFile: path.join(ROOT, 'vite.config.js'),
+      server: { middlewareMode: true },
+      appType: 'custom',
+    });
+
+    try {
+      const { default: PriceSimulator } = await vite.ssrLoadModule('/components/PriceSimulator.jsx');
+      const markup = renderToStaticMarkup(createElement(PriceSimulator, {
+        simulation: {
+          rate: 100,
+          rateDate: '2026-01-01',
+          services: [{ name: 'Netflix', category: 'Video', monthlyUsdCents: 999, periodLabel: 'Base mensual' }],
+        },
+      }));
+      const telegramHref = markup.match(/href="(https:\/\/t\.me\/[^\"]+)"/)?.[1];
+      assert.ok(telegramHref);
+      assert.equal(new URL(telegramHref).pathname, '/rensgaaa');
+      assert.equal(new URL(telegramHref).searchParams.get('text'), 'Hola, quiero consultar disponibilidad y métodos de pago para Netflix.');
+      assert.match(markup, /Consultar disponibilidad/);
+      assert.match(markup, /target="_blank"/);
+      assert.match(markup, /rel="noopener noreferrer"/);
+    } finally {
+      await vite.close();
+    }
+  });
+
   it('valida el usuario de Telegram y codifica el texto como parámetro', () => {
     const url = createTelegramPurchaseUrl(' @mi_tienda ', 'Servicio & diseño');
     assert.ok(url);

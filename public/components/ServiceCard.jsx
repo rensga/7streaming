@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { formatServicePrice } from '../lib/pricing.js';
+import { createTelegramPurchaseUrl, DEFAULT_TELEGRAM_USERNAME } from '../lib/telegram.js';
 
 const statusNames = { active: 'Disponible', inactive: 'Inactivo', sold_out: 'Agotado', coming_soon: 'Próximamente' };
 
@@ -19,8 +20,9 @@ function ServiceMark({ service }) {
   return <span className="service-monogram">{logo && !failedLogo ? <img src={logo} alt="" loading="lazy" decoding="async" referrerPolicy="no-referrer" onError={() => setFailedLogo(true)} /> : initials}</span>;
 }
 
-export default function ServiceCard({ service, onDetails }) {
+export default function ServiceCard({ service, telegramUsername = import.meta.env.VITE_TELEGRAM_USERNAME || DEFAULT_TELEGRAM_USERNAME }) {
   const status = statusNames[service.status] || statusNames.active;
+  const telegramUrl = createTelegramPurchaseUrl(telegramUsername, service.name);
   const badge = service.status === 'sold_out'
     ? <span className="card-badge unavailable">Agotado</span>
     : service.status === 'coming_soon'
@@ -37,7 +39,8 @@ export default function ServiceCard({ service, onDetails }) {
         <div className="card-title-row"><h3 className="card-title">{service.name}</h3><span className={`card-status ${service.status}`}>{status}</span></div>
         <p className="card-description">{service.shortDescription}</p>
         <div className="card-price"><strong>{formatServicePrice(service)}</strong></div>
-        <a className="card-link" href={`/catalogo/${encodeURIComponent(service.id)}:${encodeURIComponent(service.slug)}`}>Ver detalles <span aria-hidden="true">↗</span></a>
+        {telegramUrl && <a className="card-link" href={telegramUrl} target="_blank" rel="noopener noreferrer" aria-label={`Consultar ${service.name} por Telegram`}>Consultar por Telegram <span aria-hidden="true">↗</span></a>}
+        <a className="card-link card-link-secondary" href={`/catalogo/${encodeURIComponent(service.id)}:${encodeURIComponent(service.slug)}`}>Ver detalles <span aria-hidden="true">↗</span></a>
       </div>
     </article>
   );
