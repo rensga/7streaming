@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Símbolo de 7streaming</title>
+  <rect x="4" y="4" width="56" height="56" rx="17" fill="#B9F36B"/>
+  <path d="M15 17h32v7H35L26 47h-8l9-23H15z" fill="#15171A"/>
+  <path d="m41 41 8 5-8 5z" fill="#FF916B"/>
+</svg>

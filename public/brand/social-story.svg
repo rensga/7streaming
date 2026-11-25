@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" role="img" aria-labelledby="title description">
+  <title id="title">Historia de 7streaming para redes</title>
+  <desc id="description">Historia vertical de una tienda independiente de entretenimiento y creatividad, no afiliada a las marcas.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#191D1E"/><stop offset="1" stop-color="#101114"/></linearGradient>
+    <linearGradient id="scene" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#263D47"/><stop offset=".58" stop-color="#82936C"/><stop offset="1" stop-color="#D0916B"/></linearGradient>
+    <radialGradient id="glow"><stop stop-color="#9A8CFF" stop-opacity=".2"/><stop offset="1" stop-color="#9A8CFF" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1080" height="1920" fill="url(#background)"/>
+  <circle cx="540" cy="922" r="590" fill="url(#glow)"/>
+  <ellipse cx="540" cy="938" rx="422" ry="288" fill="none" stroke="#B9F36B" stroke-opacity=".23" stroke-width="2" transform="rotate(-20 540 938)"/>
+  <ellipse cx="540" cy="938" rx="365" ry="232" fill="none" stroke="#9A8CFF" stroke-opacity=".28" stroke-width="2" transform="rotate(26 540 938)"/>
+  <g transform="translate(72 83)">
+    <rect width="52" height="52" rx="16" fill="#B9F36B"/>
+    <path d="M10 12h31v7H29l-9 23h-8l9-23h-11z" fill="#15171A"/>
+    <path d="m36 36 8 5-8 5z" fill="#FF916B"/>
+    <text x="65" y="38" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="31" font-weight="800" letter-spacing="-1.4">streaming<tspan fill="#B9F36B">.</tspan></text>
+  </g>
+  <g transform="translate(72 246)">
+    <rect width="340" height="44" rx="22" fill="#22262A" stroke="#3C4241"/>
+    <circle cx="22" cy="22" r="5" fill="#B9F36B"/>
+    <text x="40" y="27" fill="#C2C5BD" font-family="'DM Sans', 'Segoe UI', sans-serif" font-size="14" font-weight="700" letter-spacing="1.6">TIENDA INDEPENDIENTE</text>
+  </g>
+  <text x="72" y="431" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="76" font-weight="700" letter-spacing="-3.7">Tu próxima</text>
+  <text x="72" y="516" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="76" font-weight="700" letter-spacing="-3.7">historia empieza</text>
+  <text x="72" y="601" fill="#B9F36B" font-family="Manrope, 'Segoe UI', sans-serif" font-size="76" font-weight="700" letter-spacing="-3.7">con claridad.</text>
+  <g transform="rotate(-4 540 961)">
+    <rect x="251" y="682" width="578" height="548" rx="26" fill="#202428" stroke="#555E57" stroke-width="2"/>
+    <rect x="270" y="701" width="540" height="510" rx="15" fill="url(#scene)"/>
+    <circle cx="706" cy="794" r="52" fill="#F1D493"/>
+    <path d="m270 1032 167-193 101 121 76-83 196 199v135H270z" fill="#475D54"/>
+    <path d="m270 1095 188-113 105 93 98-59 149 95v100H270z" fill="#1C3232"/>
+    <circle cx="540" cy="952" r="46" fill="#F3F1EC" fill-opacity=".94"/>
+    <path d="m529 927 34 25-34 25z" fill="#15171A"/>
+    <text x="304" y="1174" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="16" font-weight="700" letter-spacing="1.5">DESCUBRE · COMPARA · DECIDE</text>
+  </g>
+  <text x="72" y="1327" fill="#B8BAB5" font-family="'DM Sans', 'Segoe UI', sans-serif" font-size="24">Streaming y creatividad, en un solo catálogo.</text>
+  <text x="72" y="1368" fill="#B8BAB5" font-family="'DM Sans', 'Segoe UI', sans-serif" font-size="24">Revisa precios y condiciones de cada oferta.</text>
+  <g transform="translate(72 1461)">
+    <rect width="360" height="74" rx="13" fill="#B9F36B"/>
+    <text x="26" y="47" fill="#15171A" font-family="'DM Sans', 'Segoe UI', sans-serif" font-size="19" font-weight="800" letter-spacing=".7">EXPLORA EL CATÁLOGO</text>
+    <path d="M322 27v18m-8-8h16" stroke="#15171A" stroke-width="2"/>
+  </g>
+  <g transform="translate(72 1763)">
+    <path d="M0 0h936" stroke="#464A47"/>
+    <text x="0" y="40" fill="#DBDDD6" font-family="'DM Sans', 'Segoe UI', sans-serif" font-size="16" font-weight="700">Independiente y transparente. Sin cuentas compartidas.</text>
+    <text x="0" y="72" fill="#92958F" font-family="'DM Sans', 'Segoe UI', sans-serif" font-size="13">No afiliada a las marcas. Checkout en preparación.</text>
+  </g>
+</svg>
