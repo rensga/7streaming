@@ -1,5 +1,5 @@
 const steps = [
-  ['01', 'Explora el catálogo', 'Revisa únicamente las ofertas publicadas y sus datos comerciales. Las simulaciones de precios son ejemplos, no precios de venta.'],
+  ['01', 'Explora el catálogo', 'Revisa únicamente las ofertas publicadas y sus datos comerciales. Los ejemplos de precio son orientativos, no precios de venta.'],
   ['02', 'Confirma las condiciones', 'Comprueba el precio final, duración, entrega, condiciones y soporte antes de comprometerte.'],
   ['03', 'Consulta por Telegram', '«Adquirir ahora» abre un chat con una consulta preescrita para coordinar disponibilidad y pago directamente. También puedes usar el enlace del pie de página. La página no procesa cobros ni crea pedidos.'],
 ];

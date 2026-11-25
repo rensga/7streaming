@@ -246,7 +246,7 @@ function PriceSimulationEditor({ pricing, onChange, onSubmit, onClose, busy, err
                 <div className="field-row"><label className="field-label" htmlFor="simulation-rate">Tasa de referencia (Bs. por USDT)</label><input className="text-input" id="simulation-rate" name="rate" type="number" min="0.01" max="1000000" step="0.01" value={pricing.rate} onChange={changeField} required /></div>
                 <div className="field-row"><label className="field-label" htmlFor="simulation-date">Fecha del snapshot</label><input className="text-input" id="simulation-date" name="rateDate" type="date" value={pricing.rateDate} onChange={changeField} required /></div>
               </div>
-              <p className="editor-disclaimer">Estos valores son simulaciones editables, no ofertas ni tarifas oficiales. Cambiarlos no crea pedidos ni confirma autorización comercial.</p>
+              <p className="editor-disclaimer">Estos valores ilustrativos no son ofertas ni tarifas oficiales. Cambiarlos no crea pedidos ni confirma autorización comercial.</p>
               <div className="simulation-card-editor-list">
                 {pricing.services.map((service, index) => (
                   <fieldset className="simulation-card-editor" key={index}>
@@ -254,7 +254,7 @@ function PriceSimulationEditor({ pricing, onChange, onSubmit, onClose, busy, err
                     <div className="field-pair">
                       <div className="field-row"><label className="field-label" htmlFor={`simulation-name-${index}`}>Nombre</label><input className="text-input" id={`simulation-name-${index}`} name="name" value={service.name} onChange={(event) => changeService(index, event)} maxLength="80" required /></div>
                       <div className="field-row"><label className="field-label" htmlFor={`simulation-category-${index}`}>Categoría</label><select className="text-input" id={`simulation-category-${index}`} name="category" value={service.category} onChange={(event) => changeService(index, event)} required>{categories.slice(1).map((category) => <option key={category}>{category}</option>)}</select></div>
-                      <div className="field-row"><label className="field-label" htmlFor={`simulation-price-${index}`}>Precio hipotético (USD)</label><input className="text-input" id={`simulation-price-${index}`} name="monthlyUsd" type="number" min="0.01" max="999999999.99" step="0.01" value={service.monthlyUsd} onChange={(event) => changeService(index, event)} required /></div>
+                      <div className="field-row"><label className="field-label" htmlFor={`simulation-price-${index}`}>Importe ilustrativo (USD)</label><input className="text-input" id={`simulation-price-${index}`} name="monthlyUsd" type="number" min="0.01" max="999999999.99" step="0.01" value={service.monthlyUsd} onChange={(event) => changeService(index, event)} required /></div>
                       <div className="field-row"><label className="field-label" htmlFor={`simulation-period-${index}`}>Texto de duración</label><input className="text-input" id={`simulation-period-${index}`} name="periodLabel" value={service.periodLabel} onChange={(event) => changeService(index, event)} maxLength="40" required /></div>
                     </div>
                   </fieldset>
@@ -279,7 +279,7 @@ function AdminPanel({
     <section className="admin-section page-shell" id="admin-panel" aria-labelledby="admin-title">
       <div className="admin-heading">
         <div><div className="eyebrow"><span className="eyebrow-dash" /> ESPACIO PRIVADO</div><h1 id="admin-title">Panel de <span className="text-gradient">servicios.</span></h1><p className="admin-identity">Sesión iniciada como {email}</p></div>
-        <div className="admin-heading-actions"><button className="button button-quiet" type="button" onClick={onBack}>← Volver al catálogo</button><button className="button button-outline" type="button" onClick={onLogout}>Cerrar sesión</button><button className="button button-outline" type="button" onClick={onEditPricing} disabled={pricingLoading}>{pricingLoading ? 'Cargando…' : 'Editar simulador'}</button><button className="button button-primary" type="button" onClick={onNew}><span aria-hidden="true">＋</span> Añadir servicio</button></div>
+        <div className="admin-heading-actions"><button className="button button-quiet" type="button" onClick={onBack}>← Volver al catálogo</button><button className="button button-outline" type="button" onClick={onLogout}>Cerrar sesión</button><button className="button button-outline" type="button" onClick={onEditPricing} disabled={pricingLoading}>{pricingLoading ? 'Cargando…' : 'Editar referencias'}</button><button className="button button-primary" type="button" onClick={onNew}><span aria-hidden="true">＋</span> Añadir servicio</button></div>
       </div>
       <div className="admin-toolbar">
         <label className="search-box admin-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m16 16 4 4" /></svg><span className="visually-hidden">Buscar en los servicios</span><input type="search" value={search} onChange={(event) => onSearch(event.target.value)} placeholder="Buscar por nombre o slug..." /></label>
@@ -363,7 +363,7 @@ export function App({ initialPath, initialPage }) {
       const { pricing } = await api('/api/pricing');
       setPriceSimulation(pricing);
     } catch (error) {
-      setPriceSimulationError(`No se pudo cargar el simulador: ${error.message}`);
+      setPriceSimulationError(`No se pudieron cargar las referencias de precio: ${error.message}`);
     }
   }, []);
 

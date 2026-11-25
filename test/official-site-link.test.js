@@ -89,7 +89,7 @@ describe('contacto de compra por Telegram', () => {
     }
   });
 
-  it('permite consultar por Telegram desde una tarjeta de simulación sin presentar el precio como oferta', async () => {
+  it('permite consultar por Telegram desde una tarjeta de referencia sin presentarla como oferta', async () => {
     const vite = await createServer({
       configFile: path.join(ROOT, 'vite.config.js'),
       server: { middlewareMode: true },
@@ -106,10 +106,13 @@ describe('contacto de compra por Telegram', () => {
         },
       }));
       const telegramHref = markup.match(/href="(https:\/\/t\.me\/[^\"]+)"/)?.[1];
+      const visibleText = markup.replace(/<[^>]*>/g, ' ');
       assert.ok(telegramHref);
       assert.equal(new URL(telegramHref).pathname, '/rensgaaa');
       assert.equal(new URL(telegramHref).searchParams.get('text'), 'Hola, quiero consultar disponibilidad y métodos de pago para Netflix.');
-      assert.match(markup, /Consultar disponibilidad/);
+      assert.match(visibleText, /Consultar disponibilidad/);
+      assert.match(visibleText, /REFERENCIAS DE PRECIOS/);
+      assert.doesNotMatch(visibleText, /simulador|simulación/i);
       assert.match(markup, /target="_blank"/);
       assert.match(markup, /rel="noopener noreferrer"/);
     } finally {

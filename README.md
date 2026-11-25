@@ -12,11 +12,7 @@ Instala las dependencias del frontend React:
 npm install
 ```
 
-```powershell
-Copy-Item .env.example .env
-```
-
-Completa `ADMIN_EMAIL` y `ADMIN_PASSWORD` en `.env`; usa una contraseña propia de al menos 12 caracteres. Luego ejecuta:
+Para habilitar el panel, crea un archivo local `.env` (no se versiona) con `ADMIN_EMAIL` y `ADMIN_PASSWORD`; usa una contraseña propia de al menos 12 caracteres. Configura también `VITE_TELEGRAM_USERNAME` con tu usuario público de Telegram, sin `@`. Esta variable se incorpora al frontend y no debe contener secretos. Luego ejecuta:
 
 ```powershell
 npm start
@@ -58,7 +54,7 @@ En desarrollo local, el catálogo se guarda en `data/catalog.json`. En Vercel, F
 
 ### Despliegue
 
-Para conectar Firebase, crea un proyecto y una base de datos Cloud Firestore en modo nativo. En Firebase Console → Configuración del proyecto → Cuentas de servicio, genera una clave privada para una cuenta de servicio y añade en Vercel `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY`, junto con `ADMIN_EMAIL` y `ADMIN_PASSWORD` (mínimo 12 caracteres). La clave privada debe ser un secreto de Vercel y nunca una variable `VITE_*`; conserva el formato PEM o los saltos de línea como `\n`. Aplica `firestore.rules` desde Firebase Console o ejecuta `firebase deploy --only firestore:rules --project <project-id>`; las reglas bloquean clientes, mientras que el Admin SDK del servidor las omite. Usa un proyecto Firebase distinto para Preview y otro para Production. El primer acceso crea el documento de estado y usa `data/catalog.json` como semilla únicamente si Firestore aún está vacío. No incluyas credenciales en el frontend. `APP_ORIGIN` usa el dominio público asignado por Vercel si no se define manualmente; `VITE_TELEGRAM_USERNAME` tiene el valor público `rensgaaa` por defecto. `/api/health` es la ruta de comprobación de vida.
+Para conectar Firebase, crea un proyecto y una base de datos Cloud Firestore en modo nativo. En Firebase Console → Configuración del proyecto → Cuentas de servicio, genera una clave privada para una cuenta de servicio y añade en Vercel `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` y `FIREBASE_PRIVATE_KEY`, junto con `ADMIN_EMAIL` y `ADMIN_PASSWORD` (mínimo 12 caracteres). La clave privada debe ser un secreto de Vercel y nunca una variable `VITE_*`; conserva el formato PEM o los saltos de línea como `\n`. Aplica `firestore.rules` desde Firebase Console o ejecuta `firebase deploy --only firestore:rules --project <project-id>`; las reglas bloquean clientes, mientras que el Admin SDK del servidor las omite. Usa un proyecto Firebase distinto para Preview y otro para Production. El primer acceso crea el documento de estado y usa `data/catalog.json` como semilla únicamente si Firestore aún está vacío. No incluyas credenciales en el frontend. `APP_ORIGIN` usa el dominio público asignado por Vercel si no se define manualmente; `VITE_TELEGRAM_USERNAME` contiene el usuario público de Telegram sin `@` (su valor por defecto es `rensgaaa`) y debe estar disponible durante el build. Configurar solo Telegram y las credenciales de administración no basta para inicializar las APIs: sin las tres variables privadas de Firebase, `/api/health`, `/api/services` y `/api/pricing` devolverán un error. `/api/health` es la ruta de comprobación de vida.
 
 Revisa `PRODUCTION_CHECKLIST.md` para el análisis del mercado, la preparación comercial y las dependencias externas pendientes.
 
