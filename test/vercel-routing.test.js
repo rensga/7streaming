@@ -46,4 +46,63 @@ describe('enrutamiento de API en Vercel', () => {
   it('exporta el handler Node sin iniciar conexiones al importar el módulo', () => {
     assert.equal(typeof vercelHandler, 'function');
   });
+
+  it('sirve las referencias incluidas si Firestore no está disponible', async () => {
+    const firebaseVariables = ['FIREBASE_PROJECT_ID', 'FIREBASE_CLIENT_EMAIL', 'FIREBASE_PRIVATE_KEY'];
+    const previousValues = Object.fromEntries(firebaseVariables.map((name) => [name, process.env[name]]));
+    firebaseVariables.forEach((name) => { delete process.env[name]; });
+    const response = {
+      headers: {},
+      writeHead(status, headers) { this.status = status; this.headers = headers; },
+      end(body) { this.body = body; },
+    };
+
+    try {
+      await vercelHandler({
+        url: '/api?__7streaming_route=%2Fapi%2Fpricing',
+        method: 'GET',
+        headers: {},
+      }, response);
+
+      const body = JSON.parse(response.body);
+      assert.equal(response.status, 200);
+      assert.equal(body.fallback, true);
+      assert.equal(body.pricing.services.length, 8);
+      assert.ok(Number.isFinite(Date.parse(body.fetchedAt)));
+    } finally {
+      firebaseVariables.forEach((name) => {
+        if (previousValues[name] === undefined) delete process.env[name];
+        else process.env[name] = previousValues[name];
+      });
+    }
+  });
+
+  it('explica el error de configuración de Firestore al comprobar la sesión del panel', async () => {
+    const firebaseVariables = ['FIREBASE_PROJECT_ID', 'FIREBASE_CLIENT_EMAIL', 'FIREBASE_PRIVATE_KEY'];
+    const previousValues = Object.fromEntries(firebaseVariables.map((name) => [name, process.env[name]]));
+    firebaseVariables.forEach((name) => { delete process.env[name]; });
+    const response = {
+      headers: {},
+      writeHead(status, headers) { this.status = status; this.headers = headers; },
+      end(body) { this.body = body; },
+    };
+
+    try {
+      await vercelHandler({
+        url: '/api?__7streaming_route=%2Fapi%2Fauth%2Fsession',
+        method: 'GET',
+        headers: {},
+      }, response);
+
+      const body = JSON.parse(response.body);
+      assert.equal(response.status, 503);
+      assert.match(body.error, /Firestore.*Vercel/i);
+      assert.doesNotMatch(body.error, /interno/i);
+    } finally {
+      firebaseVariables.forEach((name) => {
+        if (previousValues[name] === undefined) delete process.env[name];
+        else process.env[name] = previousValues[name];
+      });
+    }
+  });
 });

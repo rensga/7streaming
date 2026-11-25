@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import {
   DEFAULT_PRICE_SIMULATION,
   calculateSimulatedVes,
+  formatApiUpdateTime,
   formatSimulationDate,
   formatSimulatedUsd,
   formatSimulatedVes,
@@ -23,13 +24,15 @@ export default function PriceSimulator({ simulation = DEFAULT_PRICE_SIMULATION, 
           <p>Consulta importes ilustrativos en USD y su conversión estimada a bolívares.</p>
         </div>
         <div className="simulator-rate">
-          <label htmlFor="simulator-rate">Tasa de referencia</label>
+          <label htmlFor="simulator-rate">Tasa para conversión (Bs. por USDT)</label>
           <div className="simulator-rate-input"><span>Bs.</span><input id="simulator-rate" type="number" min="0.01" max="1000000" step="0.01" value={rate} onChange={(event) => setRate(event.target.value)} aria-describedby="simulator-rate-note" /></div>
           <small id="simulator-rate-note">1 USDT ≈ {formatSimulatedVes(simulation.rate)} · snapshot del {formatSimulationDate(simulation.rateDate)}</small>
+          <small>API consultada el {formatApiUpdateTime(simulation.fetchedAt)}</small>
           <a href="https://www.binance.com/en/square/hashtag/bcv" target="_blank" rel="noopener noreferrer">Ver referencia en Binance Square ↗</a>
         </div>
       </div>
       <p className="simulator-disclaimer">Estos importes son solo ejemplos: no son tarifas oficiales ni ofertas disponibles. La conversión asume 1 USD ≈ 1 USDT y usa una referencia configurada en Binance Square; no es una cotización oficial en tiempo real y puede diferir de los precios comprador y vendedor actuales. Confirma el precio final por Telegram.</p>
+      {simulation.fallback && <p className="simulator-rate-status" role="status">La base de datos no está conectada. Se muestran los ejemplos incluidos en el sitio; los cambios del panel no se reflejarán hasta configurar Firebase. {onRetry && <button className="text-button" type="button" onClick={onRetry}>Volver a consultar</button>}</p>}
       {loadError && <p className="simulator-rate-error" role="alert">{loadError} {onRetry && <button className="text-button" type="button" onClick={onRetry}>Reintentar</button>}</p>}
       {!validRate && <p className="simulator-rate-error" role="alert">Introduce una tasa mayor que cero para ver la conversión.</p>}
       <div className="simulated-price-grid">

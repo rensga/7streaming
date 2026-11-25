@@ -29,6 +29,16 @@ export function formatSimulationDate(value) {
   }).format(date);
 }
 
+export function formatApiUpdateTime(value) {
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return 'aún no consultada';
+  return new Intl.DateTimeFormat('es-VE', {
+    timeZone: 'America/Caracas',
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(date);
+}
+
 export function calculateSimulatedVes(priceUsdCents, rate) {
   if (!Number.isSafeInteger(priceUsdCents) || priceUsdCents <= 0 || !Number.isFinite(rate) || rate <= 0) return null;
   const amount = (priceUsdCents / 100) * rate;

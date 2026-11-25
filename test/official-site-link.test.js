@@ -102,6 +102,7 @@ describe('contacto de compra por Telegram', () => {
         simulation: {
           rate: 100,
           rateDate: '2026-01-01',
+          fetchedAt: '2026-11-25T13:00:00.000Z',
           services: [{ name: 'Netflix', category: 'Video', monthlyUsdCents: 999, periodLabel: 'Base mensual' }],
         },
       }));
@@ -112,6 +113,8 @@ describe('contacto de compra por Telegram', () => {
       assert.equal(new URL(telegramHref).searchParams.get('text'), 'Hola, quiero consultar disponibilidad y métodos de pago para Netflix.');
       assert.match(visibleText, /Consultar disponibilidad/);
       assert.match(visibleText, /REFERENCIAS DE PRECIOS/);
+      assert.match(visibleText, /API consultada el 25 nov\.? 2026/);
+      assert.doesNotMatch(visibleText, /Tasa de referencia/);
       assert.doesNotMatch(visibleText, /simulador|simulación/i);
       assert.match(markup, /target="_blank"/);
       assert.match(markup, /rel="noopener noreferrer"/);

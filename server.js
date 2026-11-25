@@ -24,7 +24,7 @@ const MIME_TYPES = {
   '.webp': 'image/webp',
   '.xml': 'application/xml; charset=utf-8',
 };
-const PUBLIC_ROUTES = new Set(['/catalogo', '/catalogo/detalle', '/nosotros', '/faqs', '/como-funciona', '/aviso-legal']);
+const PUBLIC_ROUTES = new Set(['/catalogo', '/catalogo/detalle', '/nosotros', '/faqs', '/como-funciona', '/aviso-legal', '/panel/admin', '/403', '/404', '/500']);
 
 function cleanText(value, maxLength) {
   if (typeof value !== 'string') return '';
@@ -265,7 +265,7 @@ function parseCookies(header = '') {
   }).filter(([key]) => key));
 }
 
-async function serveStatic(pathname, res, serviceDetails) {
+async function serveStatic(pathname, res, serviceDetails, responseStatus = 200) {
   let decoded;
   try {
     decoded = decodeURIComponent(pathname);
@@ -276,7 +276,7 @@ async function serveStatic(pathname, res, serviceDetails) {
   const routePath = decoded.replace(/\/+$/, '') || '/';
   const isPageRoute = routePath === '/' || PUBLIC_ROUTES.has(routePath);
   const relativePath = isPageRoute
-    ? routePath === '/' ? 'index.html' : path.join(routePath.slice(1), 'index.html')
+    ? routePath === '/' ? 'index.html' : routePath === '/404' ? path.join('404', 'index.html') : path.join(routePath.slice(1), 'index.html')
     : decoded.replace(/^\/+/, '');
   const filePath = path.resolve(PUBLIC_DIR, relativePath);
   if (filePath !== PUBLIC_DIR && !filePath.startsWith(`${PUBLIC_DIR}${path.sep}`)) {
@@ -305,13 +305,19 @@ async function serveStatic(pathname, res, serviceDetails) {
     }
     const isHashedAsset = routePath.startsWith('/assets/');
     const isModernImage = extension === '.avif' || extension === '.webp';
-    res.writeHead(200, {
+    res.writeHead(responseStatus, {
       'Content-Type': MIME_TYPES[extension] || 'application/octet-stream',
       'Cache-Control': isHashedAsset ? 'public, max-age=31536000, immutable' : isModernImage ? 'public, max-age=3600' : 'no-cache',
     });
     res.end(content);
   } catch {
-    sendJson(res, 404, { error: 'No encontrado.' });
+    try {
+      const notFoundPage = await readFile(path.join(PUBLIC_DIR, '404.html'));
+      res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+      res.end(notFoundPage);
+    } catch {
+      sendJson(res, 404, { error: 'No encontrado.' });
+    }
   }
 }
 
@@ -488,7 +494,11 @@ export async function createApplication(options = {}) {
       if (pathname === '/api/health' && method === 'GET') return sendJson(res, 200, { status: 'ok' });
 
       if (pathname === '/api/pricing' && method === 'GET') {
-        return sendJson(res, 200, { pricing: store.priceSimulation });
+        return sendJson(res, 200, {
+          pricing: store.priceSimulation,
+          fetchedAt: new Date().toISOString(),
+          fallback: false,
+        });
       }
 
       if (pathname === '/api/auth/login' && method === 'POST') {
@@ -585,7 +595,7 @@ export async function createApplication(options = {}) {
           store.priceSimulation = pricing;
           appendAudit('updated', { id: 'price-simulation', name: 'Simulador de precios' }, Object.keys(pricing));
           await persist();
-          return sendJson(res, 200, { pricing });
+          return sendJson(res, 200, { pricing, fetchedAt: new Date().toISOString(), fallback: false });
         }
 
         if (pathname === '/api/admin/services' && method === 'GET') {
@@ -705,7 +715,7 @@ export async function createApplication(options = {}) {
       if (serviceDetailMatch) {
         const service = serviceIndexes.byId.get(serviceDetailMatch[1]);
         if (!service || service.slug !== serviceDetailMatch[2] || service.deletedAt || !service.published || service.status === 'inactive') {
-          return sendJson(res, 404, { error: 'Servicio no encontrado.' });
+          return serveStatic('/404', res, undefined, 404);
         }
         return serveStatic('/catalogo/detalle', res, { service, canonicalUrl: new URL(pathname, origin).href });
       }

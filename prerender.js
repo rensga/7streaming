@@ -26,8 +26,12 @@ const routes = [
   { path: '/faqs', page: 'FaqPage', title: `Preguntas frecuentes — ${BRAND_NAME}`, description: `Respuestas sobre ofertas, precios, compras, pagos y privacidad en ${BRAND_NAME}.` },
   { path: '/como-funciona', page: 'HowItWorksPage', title: `Cómo funciona — ${BRAND_NAME}`, description: 'Revisa ofertas y consulta disponibilidad por Telegram; el sitio no procesa pagos.' },
   { path: '/aviso-legal', page: 'LegalPage', title: `Aviso legal y privacidad — ${BRAND_NAME}`, description: `Avisos de independencia, privacidad y uso legítimo de ${BRAND_NAME}.` },
+  { path: '/panel/admin', page: 'AdminAccessPage', title: `Panel privado — ${BRAND_NAME}`, description: 'Acceso privado para administrar el catálogo de Eligeva.', noindex: true },
+  { path: '/403', page: 'ErrorPage', title: `Acceso denegado — ${BRAND_NAME}`, description: 'Esta sección está restringida.', noindex: true },
+  { path: '/404', page: 'ErrorPage', title: `Página no encontrada — ${BRAND_NAME}`, description: 'No encontramos la página que buscabas.', noindex: true },
+  { path: '/500', page: 'ErrorPage', title: `Error del servidor — ${BRAND_NAME}`, description: 'No pudimos completar la solicitud.', noindex: true },
 ];
-const indexableRoutes = routes.filter((route) => !route.outputPath);
+const indexableRoutes = routes.filter((route) => !route.outputPath && !route.noindex);
 
 function replaceMetaContent(html, key, value) {
   const content = value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
@@ -50,7 +54,7 @@ try {
     let html = template
       .replace(/<title>[^<]*<\/title>/, `<title>${route.title}</title>`)
       .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${route.description}">`)
-      .replace('<meta name="robots" content="index,follow">', `<link rel="canonical" href="${new URL(canonicalPath, origin).href}">\n    <meta name="robots" content="${route.outputPath ? 'noindex,follow' : 'index,follow'}">`)
+      .replace('<meta name="robots" content="index,follow">', `<link rel="canonical" href="${new URL(canonicalPath, origin).href}">\n    <meta name="robots" content="${route.outputPath || route.noindex ? 'noindex,follow' : 'index,follow'}">`)
       .replace('<div id="root"></div>', `<div id="root">${markup}</div>`);
     for (const [key, content] of [
       ['property="og:title"', route.title],
@@ -66,6 +70,7 @@ try {
     const outputPath = outputRoute === '/' ? path.join(OUTPUT_DIR, 'index.html') : path.join(OUTPUT_DIR, outputRoute.slice(1), 'index.html');
     await mkdir(path.dirname(outputPath), { recursive: true });
     await writeFile(outputPath, html, 'utf8');
+    if (route.path === '/404') await writeFile(path.join(OUTPUT_DIR, '404.html'), html, 'utf8');
   }
   const sitemapEntries = indexableRoutes.map((route) => `  <url><loc>${new URL(route.path, origin).href}</loc></url>`).join('\n');
   await writeFile(path.join(OUTPUT_DIR, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapEntries}\n</urlset>\n`, 'utf8');

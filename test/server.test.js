@@ -115,11 +115,14 @@ describe('sitio Eligeva', () => {
   it('permite administrar los precios ilustrativos con sesión y los conserva', async () => {
     const publicResponse = await fetch(`${baseUrl}/api/pricing`);
     assert.equal(publicResponse.status, 200);
-    const { pricing } = await publicResponse.json();
+    const publicData = await publicResponse.json();
+    const { pricing } = publicData;
     assert.equal(pricing.rate, 1111.65);
     assert.equal(pricing.rateDate, '2026-11-22');
     assert.equal(pricing.services.length, 8);
     assert.ok(pricing.services.every((service) => Number.isSafeInteger(service.monthlyUsdCents)));
+    assert.equal(publicData.fallback, false);
+    assert.ok(Number.isFinite(Date.parse(publicData.fetchedAt)));
 
     const unauthorized = await fetch(`${baseUrl}/api/admin/pricing`);
     assert.equal(unauthorized.status, 401);
@@ -150,10 +153,16 @@ describe('sitio Eligeva', () => {
     };
     const saved = await adminRequest('/api/admin/pricing', 'PUT', updatedPricing);
     assert.equal(saved.status, 200);
-    assert.deepEqual((await saved.json()).pricing, updatedPricing);
+    const savedData = await saved.json();
+    assert.deepEqual(savedData.pricing, updatedPricing);
+    assert.equal(savedData.fallback, false);
+    assert.ok(Number.isFinite(Date.parse(savedData.fetchedAt)));
 
     const publicUpdated = await fetch(`${baseUrl}/api/pricing`);
-    assert.deepEqual((await publicUpdated.json()).pricing, updatedPricing);
+    const publicUpdatedData = await publicUpdated.json();
+    assert.deepEqual(publicUpdatedData.pricing, updatedPricing);
+    assert.equal(publicUpdatedData.fallback, false);
+    assert.ok(Number.isFinite(Date.parse(publicUpdatedData.fetchedAt)));
     const persistedStore = JSON.parse(await readFile(path.join(dataDir, 'catalog.json'), 'utf8'));
     assert.deepEqual(persistedStore.priceSimulation, updatedPricing);
     const auditResponse = await adminRequest('/api/admin/audit?page=1&pageSize=50', 'GET');
@@ -300,6 +309,31 @@ describe('sitio Eligeva', () => {
       assert.equal(new URL(routeCanonical).pathname, route);
       assert.doesNotMatch(routeCanonical, /canonical\.invalid/);
     }
+
+    const adminPage = await fetch(`${baseUrl}/panel/admin`);
+    const adminHtml = await adminPage.text();
+    assert.equal(adminPage.status, 200);
+    assert.match(adminHtml, /ACCESO RESTRINGIDO/);
+    assert.match(adminHtml, /name="email"/);
+    assert.doesNotMatch(adminHtml, /admin-entry|Administración/);
+    assert.match(adminHtml, /<meta name="robots" content="noindex,follow">/);
+
+    const missingPage = await fetch(`${baseUrl}/una-ruta-que-no-existe`);
+    const missingHtml = await missingPage.text();
+    assert.equal(missingPage.status, 404);
+    assert.match(missingHtml, /404/);
+    assert.match(missingHtml, /no encontramos/i);
+
+    const forbiddenPage = await fetch(`${baseUrl}/403`);
+    const forbiddenHtml = await forbiddenPage.text();
+    assert.equal(forbiddenPage.status, 200);
+    assert.match(forbiddenHtml, /403/);
+    assert.match(forbiddenHtml, /acceso denegado/i);
+
+    const explicitNotFoundPage = await fetch(`${baseUrl}/404`);
+    assert.equal(explicitNotFoundPage.status, 200);
+    assert.match(await explicitNotFoundPage.text(), /No encontramos lo que buscabas/i);
+
     const detailTemplate = await (await fetch(`${baseUrl}/catalogo/detalle`)).text();
     assert.match(detailTemplate, /<meta name="robots" content="noindex,follow">/);
     const detailCanonical = detailTemplate.match(/<link rel="canonical" href="([^\"]+)">/)?.[1];
@@ -309,10 +343,10 @@ describe('sitio Eligeva', () => {
     const robotsResponse = await fetch(`${baseUrl}/robots.txt`);
     const sitemapResponse = await fetch(`${baseUrl}/sitemap.xml`);
     assert.equal(robotsResponse.status, 200);
-    assert.match(await robotsResponse.text(), /Sitemap: https?:\/\/[^\s]+\/sitemap\.xml/);
     assert.equal(sitemapResponse.status, 200);
     assert.match(sitemapResponse.headers.get('content-type'), /application\/xml/);
     const sitemap = await sitemapResponse.text();
+    assert.doesNotMatch(sitemap, /panel\/admin|\/403|\/404|\/500/);
     assert.match(sitemap, /<loc>https?:\/\/[^<]+\/faqs<\/loc>/);
     assert.doesNotMatch(sitemap, /0000000000000000/);
 

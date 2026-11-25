@@ -52,8 +52,6 @@ svg { display: block; }
 .button-outline:hover { border-color: rgba(185,243,107,.55); background: rgba(185,243,107,.07); }
 .button-quiet { border-color: transparent; background: transparent; color: #c1c1bd; }
 .button-quiet:hover { background: rgba(255,255,255,.07); color: white; }
-.admin-entry { min-height: 39px; padding: 0 13px; border-color: var(--line); font-size: 12px; }
-.admin-entry svg { width: 17px; height: 17px; fill: currentColor; }
 .menu-toggle { display: none; width: 42px; height: 42px; padding: 11px; border: 1px solid var(--line); border-radius: 7px; background: transparent; }
 .menu-toggle span { display: block; height: 1px; margin: 5px 0; background: var(--ink); }
 
@@ -192,6 +190,8 @@ svg { display: block; }
 .content-page { min-height: 65vh; padding-top: 100px; padding-bottom: 105px; }
 .content-page > h1 { max-width: 850px; margin: 19px 0 16px; font-family: var(--display); font-size: clamp(42px, 6vw, 68px); font-weight: 600; letter-spacing: -4px; line-height: 1.1; }
 .page-lede { max-width: 690px; margin: 0 0 43px; color: #a6a6a4; font-size: 15px; line-height: 1.8; }
+.error-code { margin: 24px 0 -7px; color: var(--lime); font-family: var(--display); font-size: clamp(76px, 13vw, 150px); font-weight: 700; letter-spacing: -10px; line-height: .95; opacity: .8; }
+.error-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .content-panel { max-width: 830px; margin: 17px 0; padding: 24px; border: 1px solid var(--line); border-radius: 8px; background: #17191d; }
 .content-panel h2 { margin: 0 0 9px; font-family: var(--display); font-size: 18px; letter-spacing: -.4px; }
 .content-panel p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.85; }
@@ -225,6 +225,7 @@ svg { display: block; }
 .simulator-rate a { display: inline-block; margin-top: 5px; color: var(--lime); font-size: 9px; }
 .simulator-disclaimer { margin: 19px 0 0; padding: 10px 12px; border-left: 2px solid rgba(154,140,255,.7); background: rgba(154,140,255,.06); color: #b7b3c9; font-size: 10px; line-height: 1.7; }
 .simulator-rate-error { margin: 12px 0 0; color: #ffae91; font-size: 10px; }
+.simulator-rate-status { margin: 12px 0 0; color: #d3c99c; font-size: 10px; line-height: 1.6; }
 .simulated-price-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 11px; margin-top: 17px; }
 .simulated-price-card { min-width: 0; padding: 13px; border: 1px solid var(--line); border-radius: 7px; background: #141519; }
 .simulated-price-top { min-height: 42px; display: flex; align-items: flex-start; justify-content: space-between; gap: 7px; }
@@ -346,8 +347,15 @@ textarea.text-input { min-height: 78px; resize: vertical; }
 .admin-section { min-height: 75vh; padding-top: 66px; padding-bottom: 90px; }
 body.admin-mode { background: #111216; }
 body.admin-mode main, body.admin-mode .site-footer { display: none; }
-body.admin-mode .main-nav, body.admin-mode .admin-entry { display: none; }
+body.admin-mode .main-nav, body.admin-mode .menu-toggle { display: none; }
 body.admin-mode .site-header { justify-content: flex-start; }
+.admin-access-page { min-height: 68vh; padding-block: 70px; display: grid; place-items: center; }
+.admin-access-card { width: min(100%, 440px); padding: clamp(25px, 5vw, 39px); border: 1px solid var(--line); border-radius: 10px; background: #17191d; box-shadow: 0 25px 70px rgba(0,0,0,.2); }
+.admin-access-card .dialog-mark { margin-bottom: 20px; }
+.admin-access-card h1 { margin: 14px 0 8px; font-family: var(--display); font-size: clamp(29px, 6vw, 37px); font-weight: 600; letter-spacing: -1.7px; line-height: 1.16; }
+.admin-access-card p { margin: 0 0 20px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.admin-access-card .form-submit { margin-top: 18px; }
+.admin-access-card [role="alert"] .form-submit { width: auto; }
 .admin-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 25px; }
 .admin-heading h1 { margin-top: 9px; font-size: clamp(38px, 4vw, 52px); letter-spacing: -3px; }
 .admin-heading > div:first-child > p { margin: 8px 0 0; color: var(--muted); font-size: 11px; }

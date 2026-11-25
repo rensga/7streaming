@@ -29,7 +29,8 @@ Abre `http://localhost:2008`. `npm start` compila y prerenderiza el sitio y lueg
 - Las instalaciones nuevas no incluyen productos de ejemplo; los registros heredados incompletos quedan como borradores no visibles.
 - El panel permite editar las tarjetas hipotéticas del simulador, su precio base, categoría, duración de referencia y tasa/fecha; siguen identificadas como ejemplos y no se convierten en ofertas de venta.
 - «Adquirir ahora» abre un chat de Telegram con una consulta preescrita. El enlace público de consultas también aparece en el pie del sitio; la web no procesa pagos ni registra pedidos, confirma cobros o realiza entregas.
-- Panel de administración protegido por sesión, con búsqueda, filtros, paginación, alta, edición, borrado lógico, publicación y orden de cards.
+- Panel de administración oculto de la navegación pública en `/panel/admin` y protegido por inicio de sesión; incluye búsqueda, filtros, paginación, alta, edición, borrado lógico, publicación y orden de tarjetas.
+- Páginas de error de marca para acceso denegado (`/403`), rutas inexistentes (`/404`) y fallos del servidor (`/500`).
 - Vista previa del contenido antes de guardarlo y registro de auditoría de cambios.
 - Persistencia local en `data/catalog.json`, creado al iniciar el servidor por primera vez.
 - Índices en memoria por categoría y estado para consultas públicas y administrativas habituales.

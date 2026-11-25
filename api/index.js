@@ -27,7 +27,12 @@ export default async function handler(req, res) {
   requestQueue = new Promise((resolve) => { releaseRequest = resolve; });
   await previousRequest;
 
+  let isPublicPricingRequest = false;
   try {
+    restoreVercelRequestPath(req);
+    const requestPath = new URL(req.url, 'https://vercel.local').pathname;
+    isPublicPricingRequest = req.method === 'GET' && requestPath === '/api/pricing';
+
     if (!applicationPromise) applicationPromise = createVercelApplication();
     let application;
     try {
@@ -37,9 +42,23 @@ export default async function handler(req, res) {
       throw error;
     }
     await application.refreshStore();
-    restoreVercelRequestPath(req);
     await application.listeners('request')[0](req, res);
   } catch (error) {
+    const firebaseConfigurationMissing = error.message === 'Configura FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL y FIREBASE_PRIVATE_KEY para conectar Firestore.';
+    if (isPublicPricingRequest && firebaseConfigurationMissing) {
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+      res.end(JSON.stringify({
+        pricing: structuredClone(initialStore.priceSimulation),
+        fetchedAt: new Date().toISOString(),
+        fallback: true,
+      }));
+      return;
+    }
+    if (firebaseConfigurationMissing) {
+      res.writeHead(503, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
+      res.end(JSON.stringify({ error: 'Firestore no está configurado en Vercel. Añade las credenciales privadas requeridas para habilitar el panel y sus APIs.' }));
+      return;
+    }
     if (error.status) {
       res.writeHead(error.status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' });
       res.end(JSON.stringify({ error: error.message }));

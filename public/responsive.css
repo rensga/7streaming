@@ -30,8 +30,6 @@
   .main-nav { position: absolute; top: 63px; right: 0; left: 0; padding: 12px 19px 16px; display: none; align-items: flex-start; flex-direction: column; gap: 0; border-bottom: 1px solid var(--line); background: #111216; }
   .main-nav.is-open { display: flex; }
   .main-nav a { width: 100%; padding: 11px 0; }
-  .admin-entry { min-height: 34px; margin-left: auto; padding-inline: 9px; font-size: 0; }
-  .admin-entry svg { width: 18px; height: 18px; }
   .menu-toggle { width: 37px; height: 37px; padding: 9px; display: block; }
   .hero { min-height: 0; padding-top: 58px; padding-bottom: 49px; grid-template-columns: 1fr; }
   .hero-copy { max-width: 530px; }

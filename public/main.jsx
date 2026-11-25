@@ -1,6 +1,8 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { BRAND_NAME } from '../brand.js';
 import PageSkeleton from './components/PageSkeleton.jsx';
+import AdminAccessPage from './pages/AdminAccessPage.jsx';
+import ErrorPage from './pages/ErrorPage.jsx';
 import { api } from './lib/api.js';
 import { DEFAULT_PRICE_SIMULATION, formatServicePrice } from './lib/pricing.js';
 import { createTelegramContactUrl, DEFAULT_TELEGRAM_USERNAME } from './lib/telegram.js';
@@ -22,6 +24,9 @@ const pageRoutes = {
   '/faqs': FaqPage,
   '/como-funciona': HowItWorksPage,
   '/aviso-legal': LegalPage,
+  '/403': ErrorPage,
+  '/404': ErrorPage,
+  '/500': ErrorPage,
 };
 
 const categories = ['Todos', 'Video', 'Música', 'Diseño', 'Educación', 'Otros'];
@@ -243,7 +248,7 @@ function PriceSimulationEditor({ pricing, onChange, onSubmit, onClose, busy, err
           <div className="editor-content price-simulation-editor-content">
             <div className="editor-fields">
               <div className="field-pair">
-                <div className="field-row"><label className="field-label" htmlFor="simulation-rate">Tasa de referencia (Bs. por USDT)</label><input className="text-input" id="simulation-rate" name="rate" type="number" min="0.01" max="1000000" step="0.01" value={pricing.rate} onChange={changeField} required /></div>
+                <div className="field-row"><label className="field-label" htmlFor="simulation-rate">Tasa configurada (Bs. por USDT)</label><input className="text-input" id="simulation-rate" name="rate" type="number" min="0.01" max="1000000" step="0.01" value={pricing.rate} onChange={changeField} required /></div>
                 <div className="field-row"><label className="field-label" htmlFor="simulation-date">Fecha del snapshot</label><input className="text-input" id="simulation-date" name="rateDate" type="date" value={pricing.rateDate} onChange={changeField} required /></div>
               </div>
               <p className="editor-disclaimer">Estos valores ilustrativos no son ofertas ni tarifas oficiales. Cambiarlos no crea pedidos ni confirma autorización comercial.</p>
@@ -311,19 +316,18 @@ function AdminPanel({
   );
 }
 
-function NotFoundPage() {
-  return <section className="content-page page-shell"><div className="eyebrow"><span className="eyebrow-dash" /> PÁGINA NO ENCONTRADA</div><h1>Este camino no <span className="text-gradient">existe.</span></h1><p className="page-lede">La dirección puede haber cambiado o no estar disponible.</p><a className="button button-primary" href="/">Volver al inicio</a></section>;
-}
-
 export function App({ initialPath, initialPage }) {
-  const pathname = initialPath || (typeof window === 'undefined' ? '/' : window.location.pathname);
+  const rawPathname = initialPath || (typeof window === 'undefined' ? '/' : window.location.pathname);
+  const pathname = rawPathname.replace(/\/+$/, '') || '/';
   const telegramContactUrl = createTelegramContactUrl(import.meta.env.VITE_TELEGRAM_USERNAME || DEFAULT_TELEGRAM_USERNAME);
   const isServiceDetailPath = /^\/catalogo\/[a-f0-9]{16}:[a-z0-9-]+$/.test(pathname);
-  const RoutePage = initialPage || pageRoutes[pathname] || (isServiceDetailPath ? ServiceDetailPage : NotFoundPage);
+  const isAdminPath = pathname === '/panel/admin';
+  const RoutePage = initialPage || pageRoutes[pathname] || (isServiceDetailPath ? ServiceDetailPage : ErrorPage);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [loginBusy, setLoginBusy] = useState(false);
+  const [adminAccessStatus, setAdminAccessStatus] = useState('anonymous');
+  const [adminAccessError, setAdminAccessError] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminEmail, setAdminEmail] = useState('');
   const [csrfToken, setCsrfToken] = useState('');
@@ -360,12 +364,39 @@ export function App({ initialPath, initialPage }) {
   const loadPriceSimulation = useCallback(async () => {
     setPriceSimulationError('');
     try {
-      const { pricing } = await api('/api/pricing');
-      setPriceSimulation(pricing);
+      const { pricing, fetchedAt, fallback } = await api('/api/pricing');
+      setPriceSimulation({ ...pricing, fetchedAt, fallback });
     } catch (error) {
       setPriceSimulationError(`No se pudieron cargar las referencias de precio: ${error.message}`);
     }
   }, []);
+
+  const checkAdminSession = useCallback(async () => {
+    setAdminAccessStatus('checking');
+    setAdminAccessError('');
+    setLoginError('');
+    try {
+      const session = await api('/api/auth/session');
+      if (session.authenticated) {
+        setCsrfToken(session.csrfToken);
+        setAdminEmail(session.email);
+        setIsAdmin(true);
+        setAdminAccessStatus('authenticated');
+      } else {
+        setIsAdmin(false);
+        setAdminAccessStatus('anonymous');
+      }
+    } catch (error) {
+      setAdminAccessError(error.message);
+      setAdminAccessStatus('error');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isAdminPath) return undefined;
+    checkAdminSession();
+    return undefined;
+  }, [isAdminPath, checkAdminSession]);
 
   useEffect(() => {
     if (pathname !== '/catalogo') return undefined;
@@ -398,6 +429,7 @@ export function App({ initialPath, initialPage }) {
         setIsAdmin(false);
         setCsrfToken('');
         setAdminEmail('');
+        setAdminAccessStatus('anonymous');
       }
     } finally {
       setAdminLoading(false);
@@ -420,33 +452,18 @@ export function App({ initialPath, initialPage }) {
   }, [isAdmin, auditOpen, csrfToken, showToast]);
 
 
-  const enterAdmin = async () => {
-    try {
-      const session = await api('/api/auth/session');
-      if (session.authenticated) {
-        setCsrfToken(session.csrfToken);
-        setAdminEmail(session.email);
-        setIsAdmin(true);
-      } else {
-        setLoginError('');
-        setLoginOpen(true);
-      }
-    } catch (error) {
-      showToast(error.message);
-    }
-  };
-
   const submitLogin = async (event) => {
     event.preventDefault();
     setLoginBusy(true);
     setLoginError('');
+    setAdminAccessError('');
     const body = Object.fromEntries(new FormData(event.currentTarget).entries());
     try {
       const result = await api('/api/auth/login', { method: 'POST', body: JSON.stringify(body) });
       setCsrfToken(result.csrfToken);
       setAdminEmail(result.email);
-      setLoginOpen(false);
       setIsAdmin(true);
+      setAdminAccessStatus('authenticated');
       showToast('Sesión iniciada.');
     } catch (error) {
       setLoginError(error.message);
@@ -464,6 +481,7 @@ export function App({ initialPath, initialPage }) {
     setIsAdmin(false);
     setCsrfToken('');
     setAdminEmail('');
+    setAdminAccessStatus('anonymous');
     setAuditOpen(false);
     setPriceSimulationEditor(null);
     if (notify) showToast('Sesión administrativa cerrada.');
@@ -498,14 +516,14 @@ export function App({ initialPath, initialPage }) {
       })),
     };
     try {
-      const { pricing } = await api('/api/admin/pricing', {
+      const { pricing, fetchedAt, fallback } = await api('/api/admin/pricing', {
         method: 'PUT',
         body: JSON.stringify(payload),
       }, csrfToken);
-      setPriceSimulation(pricing);
+      setPriceSimulation({ ...pricing, fetchedAt, fallback });
       setPriceSimulationError('');
       setPriceSimulationEditor(null);
-      showToast('Tarjetas y tasa de referencia actualizadas.');
+      showToast('Tarjetas y tasa configurada actualizadas.');
     } catch (error) {
       setPriceSimulationEditorError(Object.values(error.fields || {}).join(' ') || error.message);
       if (error.status === 401) await leaveAdmin(false);
@@ -584,17 +602,17 @@ export function App({ initialPath, initialPage }) {
         <nav className={`main-nav${menuOpen ? ' is-open' : ''}`} id="main-nav-mobile" aria-label="Navegación principal">
           <a href="/catalogo" onClick={() => setMenuOpen(false)}>Catálogo</a><a href="/nosotros" onClick={() => setMenuOpen(false)}>Nosotros</a><a href="/faqs" onClick={() => setMenuOpen(false)}>FAQs</a><a href="/como-funciona" onClick={() => setMenuOpen(false)}>Cómo funciona</a>
         </nav>
-        <button className="button button-quiet admin-entry" type="button" onClick={enterAdmin}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 19 6v5c0 4.7-3 8-7 10-4-2-7-5.3-7-10V6l7-3Zm0 4a3 3 0 0 0-3 3v1H8v5h8v-5h-1v-1a3 3 0 0 0-3-3Zm-1 4v-1a1 1 0 1 1 2 0v1h-2Z" /></svg> Administración</button>
         <button className="menu-toggle" type="button" aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={menuOpen} aria-controls="main-nav-mobile" onClick={() => setMenuOpen((open) => !open)}><span /><span /></button>
       </header>
 
-      <main id="main-content"><Suspense fallback={<PageSkeleton />}><RoutePage path={pathname} priceSimulation={priceSimulation} priceSimulationError={priceSimulationError} onRetryPriceSimulation={loadPriceSimulation} /></Suspense></main>
+      <main id="main-content">{isAdminPath
+        ? !isAdmin && <AdminAccessPage status={adminAccessStatus} error={adminAccessError} loginError={loginError} busy={loginBusy} onRetry={checkAdminSession} onSubmit={submitLogin} />
+        : <Suspense fallback={<PageSkeleton />}><RoutePage path={pathname} priceSimulation={priceSimulation} priceSimulationError={priceSimulationError} onRetryPriceSimulation={loadPriceSimulation} /></Suspense>}
+      </main>
 
-      {isAdmin && <AdminPanel email={adminEmail} services={adminServices} page={adminPage} pages={adminPages} total={adminTotal} search={adminSearch} category={adminCategory} status={adminStatus} auditOpen={auditOpen} auditLogs={auditLogs} loading={adminLoading} error={adminError} pricingLoading={priceSimulationLoading} onEditPricing={openPriceSimulationEditor} onSearch={(value) => { setAdminSearch(value); setAdminPage(1); }} onCategory={(value) => { setAdminCategory(value); setAdminPage(1); }} onStatus={(value) => { setAdminStatus(value); setAdminPage(1); }} onPrevious={() => setAdminPage((page) => Math.max(1, page - 1))} onNext={() => setAdminPage((page) => Math.min(adminPages, page + 1))} onVisibility={toggleVisibility} onEdit={openEditor} onDelete={deleteService} onNew={() => openEditor()} onLogout={() => leaveAdmin()} onBack={() => leaveAdmin(false)} onToggleAudit={() => setAuditOpen((open) => !open)} />}
+      {isAdminPath && isAdmin && <AdminPanel email={adminEmail} services={adminServices} page={adminPage} pages={adminPages} total={adminTotal} search={adminSearch} category={adminCategory} status={adminStatus} auditOpen={auditOpen} auditLogs={auditLogs} loading={adminLoading} error={adminError} pricingLoading={priceSimulationLoading} onEditPricing={openPriceSimulationEditor} onSearch={(value) => { setAdminSearch(value); setAdminPage(1); }} onCategory={(value) => { setAdminCategory(value); setAdminPage(1); }} onStatus={(value) => { setAdminStatus(value); setAdminPage(1); }} onPrevious={() => setAdminPage((page) => Math.max(1, page - 1))} onNext={() => setAdminPage((page) => Math.min(adminPages, page + 1))} onVisibility={toggleVisibility} onEdit={openEditor} onDelete={deleteService} onNew={() => openEditor()} onLogout={() => leaveAdmin()} onBack={() => { window.location.assign('/catalogo'); }} onToggleAudit={() => setAuditOpen((open) => !open)} />}
 
       <footer className="site-footer"><div className="page-shell footer-top"><a className="brand footer-brand" href="/" aria-label={`${BRAND_NAME}, inicio`}><img className="brand-logo" src="/brand/logo-dark.svg" alt="" width="300" height="64" /></a><p>Menos ruido. Más buenas elecciones.</p><a className="footer-telegram" href={telegramContactUrl} target="_blank" rel="noopener noreferrer">Consultar por Telegram ↗</a><a className="back-top" href="/">Volver al inicio <span aria-hidden="true">↑</span></a></div><div className="page-shell footer-bottom"><span>© {new Date().getFullYear()} {BRAND_NAME}. Tienda independiente.</span><span>No afiliada a las marcas mencionadas.</span><a href="/aviso-legal">Aviso legal y privacidad</a></div></footer>
-
-      <Dialog open={loginOpen} onClose={() => setLoginOpen(false)} className="site-dialog login-dialog" labelledBy="login-title"><form className="dialog-card login-card" onSubmit={submitLogin}><button className="dialog-close" type="button" onClick={() => setLoginOpen(false)} aria-label="Cerrar">×</button><img className="dialog-mark" src="/brand/mark.svg" alt="" width="36" height="36" /><div className="eyebrow"><span className="eyebrow-dash" /> ACCESO RESTRINGIDO</div><h2 id="login-title">Bienvenido<br /><span className="text-gradient">de vuelta.</span></h2><p>Solo el administrador autorizado puede gestionar el catálogo.</p><label className="field-label" htmlFor="login-email">Correo electrónico</label><input className="text-input" id="login-email" name="email" type="email" autoComplete="username" required /><label className="field-label" htmlFor="login-password">Contraseña</label><input className="text-input" id="login-password" name="password" type="password" autoComplete="current-password" required />{loginError && <p className="form-error" role="alert">{loginError}</p>}<button className="button button-primary form-submit" type="submit" disabled={loginBusy}>Iniciar sesión <span aria-hidden="true">→</span></button></form></Dialog>
 
       <ServiceEditor service={editor} onChange={setEditor} onSubmit={submitService} onClose={() => setEditor(null)} busy={editorBusy} />
       <PriceSimulationEditor pricing={priceSimulationEditor} onChange={setPriceSimulationEditor} onSubmit={submitPriceSimulation} onClose={() => { setPriceSimulationEditor(null); setPriceSimulationEditorError(''); }} busy={priceSimulationEditorBusy} error={priceSimulationEditorError} />
