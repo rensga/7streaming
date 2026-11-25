@@ -1,4 +1,4 @@
-# 7streaming
+# Eligeva
 
 Tienda independiente en español de servicios digitales de streaming y creatividad. Incluye catálogo filtrable, fichas de oferta y un panel privado para administrar los servicios.
 
@@ -44,11 +44,11 @@ Abre `http://localhost:2008`. `npm start` compila y prerenderiza el sitio y lueg
 
 ## Identidad visual
 
-El kit de marca editable está documentado en `BRAND_GUIDE.md` e incluye logotipos SVG, símbolo, flyer A4 y piezas para redes en formatos 4:5, 9:16 y 1200 × 630. Las ilustraciones son originales y la comunicación identifica a 7streaming como tienda independiente y no afiliada a las marcas listadas. La web usa `mark.svg` como favicon y en el acceso administrativo, `logo-dark.svg` en cabecera y pie y `social-cover.svg` en los metadatos de vista previa; define `APP_ORIGIN` al compilar para que `og:image` use la URL absoluta del dominio final.
+El kit de marca editable está documentado en `BRAND_GUIDE.md` e incluye logotipos SVG, símbolo, flyer A4 y piezas para redes en formatos 4:5, 9:16 y 1200 × 630. Las ilustraciones son originales y la comunicación identifica a Eligeva como tienda independiente y no afiliada a las marcas listadas. La web usa `mark.svg` como favicon y en el acceso administrativo, `logo-dark.svg` en cabecera y pie y `social-cover.svg` en los metadatos de vista previa; define `APP_ORIGIN` al compilar para que `og:image` use la URL absoluta del dominio final.
 
 ## Alcance legal y operativo
 
-7streaming es una tienda independiente; no está afiliada, patrocinada ni respaldada por las marcas listadas. «Adquirir ahora» solo abre un chat con el operador para coordinar manualmente una oferta publicada; no es un checkout y la página no recibe ni verifica pagos ni pedidos. Antes de vender, confirma que cada oferta pueda comercializarse, define condiciones reales de servicio, cancelación y reembolso, y configura la facturación correspondiente. No pidas ni compartas por Telegram contraseñas, datos completos de tarjetas ni códigos de verificación.
+Eligeva es una tienda independiente; no está afiliada, patrocinada ni respaldada por las marcas listadas. «Adquirir ahora» solo abre un chat con el operador para coordinar manualmente una oferta publicada; no es un checkout y la página no recibe ni verifica pagos ni pedidos. Antes de vender, confirma que cada oferta pueda comercializarse, define condiciones reales de servicio, cancelación y reembolso, y configura la facturación correspondiente. No pidas ni compartas por Telegram contraseñas, datos completos de tarjetas ni códigos de verificación.
 
 No publiques ofertas que impliquen credenciales compartidas, suplantación, fraude o acceso no autorizado. Los nombres y logotipos pertenecen a sus respectivos titulares y no implican afiliación ni respaldo.
 
@@ -64,7 +64,7 @@ Revisa `PRODUCTION_CHECKLIST.md` para el análisis del mercado, la preparación 
 
 ### CDN de assets
 
-Para producción, configura `ASSET_CDN_URL` con la URL base HTTPS del CDN (por ejemplo, `https://cdn.example.com/7streaming`) tanto al compilar como al iniciar el servidor. El build publica las URLs de CSS, JavaScript y recursos Vite desde esa base; sincroniza el contenido de `dist/assets` con la ruta `/assets` del CDN y conserva la misma estructura. El servidor incorpora el origen configurado a su política CSP. Los scripts actuales son módulos de primera parte y no se carga JavaScript de terceros.
+Para producción, configura `ASSET_CDN_URL` con la URL base HTTPS del CDN (por ejemplo, `https://cdn.example.com/eligeva`) tanto al compilar como al iniciar el servidor. El build publica las URLs de CSS, JavaScript y recursos Vite desde esa base; sincroniza el contenido de `dist/assets` con la ruta `/assets` del CDN y conserva la misma estructura. El servidor incorpora el origen configurado a su política CSP. Los scripts actuales son módulos de primera parte y no se carga JavaScript de terceros.
 
 ## Pruebas
 

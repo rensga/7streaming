@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" role="img" aria-labelledby="title description">
-  <title id="title">Historia de 7streaming para redes</title>
+  <title id="title">Historia de Eligeva para redes</title>
   <desc id="description">Historia vertical de una tienda independiente de entretenimiento y creatividad, no afiliada a las marcas.</desc>
   <defs>
     <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#191D1E"/><stop offset="1" stop-color="#101114"/></linearGradient>
@@ -12,9 +12,9 @@
   <ellipse cx="540" cy="938" rx="365" ry="232" fill="none" stroke="#9A8CFF" stroke-opacity=".28" stroke-width="2" transform="rotate(26 540 938)"/>
   <g transform="translate(72 83)">
     <rect width="52" height="52" rx="16" fill="#B9F36B"/>
-    <path d="M10 12h31v7H29l-9 23h-8l9-23h-11z" fill="#15171A"/>
+    <path d="m10 27 8 8 19-20" fill="none" stroke="#15171A" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
     <path d="m36 36 8 5-8 5z" fill="#FF916B"/>
-    <text x="65" y="38" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="31" font-weight="800" letter-spacing="-1.4">streaming<tspan fill="#B9F36B">.</tspan></text>
+    <text x="65" y="38" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="31" font-weight="800" letter-spacing="-1.4">Eligeva<tspan fill="#B9F36B">.</tspan></text>
   </g>
   <g transform="translate(72 246)">
     <rect width="340" height="44" rx="22" fill="#22262A" stroke="#3C4241"/>

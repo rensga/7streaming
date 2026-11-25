@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BRAND_NAME } from '../../brand.js';
 import { api } from '../lib/api.js';
 import { formatServicePrice } from '../lib/pricing.js';
 import { createTelegramPurchaseUrl, DEFAULT_TELEGRAM_USERNAME } from '../lib/telegram.js';
@@ -37,7 +38,7 @@ export default function ServiceDetailPage({ path }) {
         if (result.id !== match[1]) throw new Error('No encontramos este servicio.');
         if (active) {
           setService(result);
-          document.title = `${result.name} — 7streaming`;
+          document.title = `${result.name} — ${BRAND_NAME}`;
         }
       })
       .catch((requestError) => { if (active) setError(requestError.message); })

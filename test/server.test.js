@@ -81,7 +81,7 @@ function offer(overrides = {}) {
     sortOrder: 20,
     isFeatured: false,
     seoTitle: 'Audio Alfa — 7streaming',
-    seoDescription: 'Oferta de prueba con condiciones verificadas.',
+    seoDescription: 'Oferta de prueba en 7streaming con condiciones verificadas.',
     priceAmount: 1299,
     currency: 'USD',
     duration: '1 mes',
@@ -94,7 +94,7 @@ function offer(overrides = {}) {
   };
 }
 
-describe('sitio 7streaming', () => {
+describe('sitio Eligeva', () => {
   it('respeta PORT y rechaza valores inválidos', () => {
     assert.equal(getServerPort('2009'), 2009);
     assert.equal(getServerPort('0'), 0);
@@ -268,7 +268,8 @@ describe('sitio 7streaming', () => {
     const page = await fetch(baseUrl);
     assert.equal(page.status, 200);
     const pageHtml = await page.text();
-    assert.match(pageHtml, /7streaming/);
+    assert.match(pageHtml, /Eligeva/);
+    assert.doesNotMatch(pageHtml, /7streaming/);
     assert.match(pageHtml, /id="root"/);
     assertSocialMetadata(pageHtml);
     const homeCanonical = pageHtml.match(/<link rel="canonical" href="([^\"]+)">/)?.[1];
@@ -290,6 +291,8 @@ describe('sitio 7streaming', () => {
       const routeHtml = await routeResponse.text();
       assert.equal(routeResponse.status, 200, `${route} debe responder correctamente`);
       assert.ok(routeHtml.includes(heading), `${route} debe incluir su contenido prerenderizado`);
+      assert.match(routeHtml, /Eligeva/);
+      assert.doesNotMatch(routeHtml, /7streaming/);
       assert.ok(routeHtml.includes('id="root"'));
       assertSocialMetadata(routeHtml);
       const routeCanonical = routeHtml.match(/<link rel="canonical" href="([^\"]+)">/)?.[1];
@@ -403,7 +406,9 @@ describe('sitio 7streaming', () => {
     const detailResponse = await fetch(`${baseUrl}${detailPath}`);
     const detailHtml = await detailResponse.text();
     assert.equal(detailResponse.status, 200);
-    assert.ok(detailHtml.includes(`<title>${services[0].seoTitle}</title>`));
+    assert.ok(detailHtml.includes(`<title>${services[0].seoTitle.replaceAll('7streaming', 'Eligeva')}</title>`));
+    assert.match(detailHtml, /Oferta de prueba en Eligeva con condiciones verificadas\./);
+    assert.doesNotMatch(detailHtml, /7streaming/);
     assert.ok(detailHtml.includes(`<link rel="canonical" href="${new URL(detailPath, appOrigin).href}">`));
     assert.match(detailHtml, /<meta name="robots" content="index,follow">/);
 

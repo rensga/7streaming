@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import { BRAND_NAME } from '../brand.js';
 import PageSkeleton from './components/PageSkeleton.jsx';
 import { api } from './lib/api.js';
 import { DEFAULT_PRICE_SIMULATION, formatServicePrice } from './lib/pricing.js';
@@ -49,7 +50,7 @@ function safeHttpsUrl(value = '') {
 }
 
 function initials(name = '') {
-  return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0] || '').join('').toUpperCase() || '7';
+  return name.trim().split(/\s+/).slice(0, 2).map((part) => part[0] || '').join('').toUpperCase() || 'E';
 }
 
 function Dialog({ open, onClose, className = '', labelledBy, children }) {
@@ -203,7 +204,7 @@ function ServiceEditor({ service, onChange, onSubmit, onClose, busy }) {
                 <div className="field-row"><label className="field-label" htmlFor="service-seo-description">Descripción SEO</label><input className="text-input" id="service-seo-description" name="seoDescription" value={service.seoDescription} onChange={change} maxLength="180" /></div>
               </div>
               <label className="check-row"><input name="isFeatured" type="checkbox" checked={service.isFeatured} onChange={change} /><span className="check-box" /><span>Destacar en el catálogo</span></label>
-              <label className="check-row"><input name="authorizedToSell" type="checkbox" checked={service.authorizedToSell} onChange={change} /><span className="check-box" /><span>Confirmo que 7streaming está autorizada a comercializar esta oferta</span></label>
+              <label className="check-row"><input name="authorizedToSell" type="checkbox" checked={service.authorizedToSell} onChange={change} /><span className="check-box" /><span>Confirmo que {BRAND_NAME} está autorizada a comercializar esta oferta</span></label>
               <label className="check-row"><input name="published" type="checkbox" checked={service.published} onChange={change} /><span className="check-box" /><span>Visible en el catálogo público</span></label>
               <p className="editor-disclaimer">La publicación exige precio exacto, moneda, duración, entrega, condiciones, soporte y autorización comercial. Esta confirmación es responsabilidad del operador y no constituye una licencia.</p>
             </div>
@@ -579,7 +580,7 @@ export function App({ initialPath, initialPage }) {
   return (
     <>
       <header className="site-header">
-        <a className="brand" href="/" aria-label="7streaming, inicio"><img className="brand-logo" src="/brand/logo-dark.svg" alt="" width="300" height="64" /></a>
+        <a className="brand" href="/" aria-label={`${BRAND_NAME}, inicio`}><img className="brand-logo" src="/brand/logo-dark.svg" alt="" width="300" height="64" /></a>
         <nav className={`main-nav${menuOpen ? ' is-open' : ''}`} id="main-nav-mobile" aria-label="Navegación principal">
           <a href="/catalogo" onClick={() => setMenuOpen(false)}>Catálogo</a><a href="/nosotros" onClick={() => setMenuOpen(false)}>Nosotros</a><a href="/faqs" onClick={() => setMenuOpen(false)}>FAQs</a><a href="/como-funciona" onClick={() => setMenuOpen(false)}>Cómo funciona</a>
         </nav>
@@ -591,7 +592,7 @@ export function App({ initialPath, initialPage }) {
 
       {isAdmin && <AdminPanel email={adminEmail} services={adminServices} page={adminPage} pages={adminPages} total={adminTotal} search={adminSearch} category={adminCategory} status={adminStatus} auditOpen={auditOpen} auditLogs={auditLogs} loading={adminLoading} error={adminError} pricingLoading={priceSimulationLoading} onEditPricing={openPriceSimulationEditor} onSearch={(value) => { setAdminSearch(value); setAdminPage(1); }} onCategory={(value) => { setAdminCategory(value); setAdminPage(1); }} onStatus={(value) => { setAdminStatus(value); setAdminPage(1); }} onPrevious={() => setAdminPage((page) => Math.max(1, page - 1))} onNext={() => setAdminPage((page) => Math.min(adminPages, page + 1))} onVisibility={toggleVisibility} onEdit={openEditor} onDelete={deleteService} onNew={() => openEditor()} onLogout={() => leaveAdmin()} onBack={() => leaveAdmin(false)} onToggleAudit={() => setAuditOpen((open) => !open)} />}
 
-      <footer className="site-footer"><div className="page-shell footer-top"><a className="brand footer-brand" href="/" aria-label="7streaming, inicio"><img className="brand-logo" src="/brand/logo-dark.svg" alt="" width="300" height="64" /></a><p>Menos ruido. Más buenas elecciones.</p><a className="footer-telegram" href={telegramContactUrl} target="_blank" rel="noopener noreferrer">Consultar por Telegram ↗</a><a className="back-top" href="/">Volver al inicio <span aria-hidden="true">↑</span></a></div><div className="page-shell footer-bottom"><span>© {new Date().getFullYear()} 7streaming. Tienda independiente.</span><span>No afiliada a las marcas mencionadas.</span><a href="/aviso-legal">Aviso legal y privacidad</a></div></footer>
+      <footer className="site-footer"><div className="page-shell footer-top"><a className="brand footer-brand" href="/" aria-label={`${BRAND_NAME}, inicio`}><img className="brand-logo" src="/brand/logo-dark.svg" alt="" width="300" height="64" /></a><p>Menos ruido. Más buenas elecciones.</p><a className="footer-telegram" href={telegramContactUrl} target="_blank" rel="noopener noreferrer">Consultar por Telegram ↗</a><a className="back-top" href="/">Volver al inicio <span aria-hidden="true">↑</span></a></div><div className="page-shell footer-bottom"><span>© {new Date().getFullYear()} {BRAND_NAME}. Tienda independiente.</span><span>No afiliada a las marcas mencionadas.</span><a href="/aviso-legal">Aviso legal y privacidad</a></div></footer>
 
       <Dialog open={loginOpen} onClose={() => setLoginOpen(false)} className="site-dialog login-dialog" labelledBy="login-title"><form className="dialog-card login-card" onSubmit={submitLogin}><button className="dialog-close" type="button" onClick={() => setLoginOpen(false)} aria-label="Cerrar">×</button><img className="dialog-mark" src="/brand/mark.svg" alt="" width="36" height="36" /><div className="eyebrow"><span className="eyebrow-dash" /> ACCESO RESTRINGIDO</div><h2 id="login-title">Bienvenido<br /><span className="text-gradient">de vuelta.</span></h2><p>Solo el administrador autorizado puede gestionar el catálogo.</p><label className="field-label" htmlFor="login-email">Correo electrónico</label><input className="text-input" id="login-email" name="email" type="email" autoComplete="username" required /><label className="field-label" htmlFor="login-password">Contraseña</label><input className="text-input" id="login-password" name="password" type="password" autoComplete="current-password" required />{loginError && <p className="form-error" role="alert">{loginError}</p>}<button className="button button-primary form-submit" type="submit" disabled={loginBusy}>Iniciar sesión <span aria-hidden="true">→</span></button></form></Dialog>
 

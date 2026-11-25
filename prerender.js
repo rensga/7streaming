@@ -4,6 +4,7 @@ import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createServer, loadEnv } from 'vite';
+import { BRAND_NAME } from './brand.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(ROOT, 'dist');
@@ -18,13 +19,13 @@ if (!['http:', 'https:'].includes(origin.protocol) || origin.origin !== appOrigi
 }
 const socialImageUrl = new URL('/brand/social-cover.svg', origin).href;
 const routes = [
-  { path: '/', page: 'HomePage', title: '7streaming — Menos ruido. Más buenas elecciones.', description: 'Tienda independiente de servicios digitales de entretenimiento y creatividad. Descubre las ofertas de 7streaming.' },
-  { path: '/catalogo', page: 'CatalogPage', title: 'Catálogo de servicios — 7streaming', description: 'Explora ofertas de streaming y herramientas creativas en una tienda independiente.' },
-  { path: '/catalogo/0000000000000000:servicio', outputPath: '/catalogo/detalle', page: 'ServiceDetailPage', title: 'Ficha de servicio — 7streaming', description: 'Consulta la información de un servicio en 7streaming.' },
-  { path: '/nosotros', page: 'AboutPage', title: 'Nosotros — 7streaming', description: 'Conoce la tienda independiente 7streaming y nuestro compromiso de transparencia.' },
-  { path: '/faqs', page: 'FaqPage', title: 'Preguntas frecuentes — 7streaming', description: 'Respuestas sobre ofertas, precios, compras, pagos y privacidad en 7streaming.' },
-  { path: '/como-funciona', page: 'HowItWorksPage', title: 'Cómo funciona — 7streaming', description: 'Revisa ofertas y consulta disponibilidad por Telegram; el sitio no procesa pagos.' },
-  { path: '/aviso-legal', page: 'LegalPage', title: 'Aviso legal y privacidad — 7streaming', description: 'Avisos de independencia, privacidad y uso legítimo de 7streaming.' },
+  { path: '/', page: 'HomePage', title: `${BRAND_NAME} — Menos ruido. Más buenas elecciones.`, description: `Tienda independiente de servicios digitales de entretenimiento y creatividad. Descubre las ofertas de ${BRAND_NAME}.` },
+  { path: '/catalogo', page: 'CatalogPage', title: `Catálogo de servicios — ${BRAND_NAME}`, description: 'Explora ofertas de streaming y herramientas creativas en una tienda independiente.' },
+  { path: '/catalogo/0000000000000000:servicio', outputPath: '/catalogo/detalle', page: 'ServiceDetailPage', title: `Ficha de servicio — ${BRAND_NAME}`, description: `Consulta la información de un servicio en ${BRAND_NAME}.` },
+  { path: '/nosotros', page: 'AboutPage', title: `Nosotros — ${BRAND_NAME}`, description: `Conoce la tienda independiente ${BRAND_NAME} y nuestro compromiso de transparencia.` },
+  { path: '/faqs', page: 'FaqPage', title: `Preguntas frecuentes — ${BRAND_NAME}`, description: `Respuestas sobre ofertas, precios, compras, pagos y privacidad en ${BRAND_NAME}.` },
+  { path: '/como-funciona', page: 'HowItWorksPage', title: `Cómo funciona — ${BRAND_NAME}`, description: 'Revisa ofertas y consulta disponibilidad por Telegram; el sitio no procesa pagos.' },
+  { path: '/aviso-legal', page: 'LegalPage', title: `Aviso legal y privacidad — ${BRAND_NAME}`, description: `Avisos de independencia, privacidad y uso legítimo de ${BRAND_NAME}.` },
 ];
 const indexableRoutes = routes.filter((route) => !route.outputPath);
 

@@ -3,6 +3,7 @@ import { randomBytes, scryptSync, timingSafeEqual } from 'node:crypto';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { BRAND_NAME } from './brand.js';
 import { DEFAULT_PRICE_SIMULATION } from './public/lib/pricing.js';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
@@ -287,8 +288,8 @@ async function serveStatic(pathname, res, serviceDetails) {
     const extension = path.extname(filePath);
     if (serviceDetails && extension === '.html') {
       const { service, canonicalUrl } = serviceDetails;
-      const title = service.seoTitle || `${service.name} — 7streaming`;
-      const description = service.seoDescription || service.shortDescription;
+      const title = (service.seoTitle || `${service.name} — ${BRAND_NAME}`).replaceAll('7streaming', BRAND_NAME);
+      const description = (service.seoDescription || service.shortDescription).replaceAll('7streaming', BRAND_NAME);
       let html = content.toString('utf8')
         .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(title)}</title>`)
         .replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${escapeHtml(canonicalUrl)}">`)
@@ -741,7 +742,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     const app = await createApplication({ port });
     const host = getServerHost();
     app.listen(port, host, () => {
-      console.log(`7streaming disponible en ${process.env.APP_ORIGIN || `http://localhost:${port}`}`);
+      console.log(`${BRAND_NAME} disponible en ${process.env.APP_ORIGIN || `http://localhost:${port}`}`);
       if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
         console.warn('Panel administrativo deshabilitado: configura ADMIN_EMAIL y ADMIN_PASSWORD en .env.');
       }

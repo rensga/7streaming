@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title description">
-  <title id="title">7streaming — Menos ruido. Más buenas elecciones.</title>
+  <title id="title">Eligeva — Menos ruido. Más buenas elecciones.</title>
   <desc id="description">Portada de una tienda independiente de entretenimiento y creatividad, no afiliada a las marcas listadas.</desc>
   <defs>
     <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#181B1E"/><stop offset="1" stop-color="#101114"/></linearGradient>
@@ -10,9 +10,9 @@
   <circle cx="950" cy="330" r="380" fill="url(#glow)"/>
   <g transform="translate(72 54)">
     <rect width="50" height="50" rx="15" fill="#B9F36B"/>
-    <path d="M10 12h30v7H28l-8 22h-8l8-22h-10z" fill="#15171A"/>
+    <path d="m10 27 8 8 18-19" fill="none" stroke="#15171A" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
     <path d="m35 35 8 5-8 5z" fill="#FF916B"/>
-    <text x="63" y="37" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="29" font-weight="800" letter-spacing="-1.4">streaming<tspan fill="#B9F36B">.</tspan></text>
+    <text x="63" y="37" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="29" font-weight="800" letter-spacing="-1.4">Eligeva<tspan fill="#B9F36B">.</tspan></text>
   </g>
   <text x="72" y="253" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="62" font-weight="700" letter-spacing="-3">Menos ruido.</text>
   <text x="72" y="324" fill="#B9F36B" font-family="Manrope, 'Segoe UI', sans-serif" font-size="62" font-weight="700" letter-spacing="-3">Más buenas elecciones.</text>

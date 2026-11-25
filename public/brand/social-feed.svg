@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" role="img" aria-labelledby="title description">
-  <title id="title">Pieza para redes de 7streaming</title>
+  <title id="title">Pieza para redes de Eligeva</title>
   <desc id="description">Gráfico editorial de una tienda independiente de entretenimiento y creatividad, sin afiliación con las marcas.</desc>
   <defs>
     <linearGradient id="background" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#171A1D"/><stop offset="1" stop-color="#101114"/></linearGradient>
@@ -11,9 +11,9 @@
   <path d="M-30 955C190 785 293 824 468 934s329 126 643-43v459H-30z" fill="#171B1C" opacity=".8"/>
   <g transform="translate(72 68)">
     <rect width="52" height="52" rx="16" fill="#B9F36B"/>
-    <path d="M10 12h31v7H29l-9 23h-8l9-23h-11z" fill="#15171A"/>
+    <path d="m10 27 8 8 19-20" fill="none" stroke="#15171A" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
     <path d="m36 36 8 5-8 5z" fill="#FF916B"/>
-    <text x="65" y="38" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="31" font-weight="800" letter-spacing="-1.4">streaming<tspan fill="#B9F36B">.</tspan></text>
+    <text x="65" y="38" fill="#F3F1EC" font-family="Manrope, 'Segoe UI', sans-serif" font-size="31" font-weight="800" letter-spacing="-1.4">Eligeva<tspan fill="#B9F36B">.</tspan></text>
   </g>
   <g transform="translate(72 194)">
     <rect width="332" height="42" rx="21" fill="#22262A" stroke="#3C4241"/>

@@ -1,14 +1,14 @@
-# Identidad de marca · 7streaming
+# Identidad de marca · Eligeva
 
 ## Esencia
 
-**7streaming es una tienda independiente de servicios digitales de entretenimiento y creatividad.** No está afiliada a las marcas del catálogo. El checkout está en preparación; no se deben prometer compras o pagos hasta integrar y probar una pasarela.
+**Eligeva es una tienda independiente de servicios digitales de entretenimiento y creatividad.** El nombre nace de la idea de elegir con claridad. No está afiliada a las marcas del catálogo. El checkout está en preparación; no se deben prometer compras o pagos hasta integrar y probar una pasarela.
 
 - **Idea central:** elegir con claridad, sin ruido ni promesas confusas.
 - **Lema principal:** Menos ruido. Más buenas elecciones.
 - **Lema de campaña:** Descubre. Compara. Decide.
 - **Personalidad:** editorial, cálida, contemporánea, directa y transparente.
-- **Promesa:** ofertas publicadas por 7streaming con precio, duración, condiciones y soporte claros, sin sugerir afiliación oficial.
+- **Promesa:** ofertas publicadas por Eligeva con precio, duración, condiciones y soporte claros, sin sugerir afiliación oficial.
 
 ## Logotipo y símbolo
 
@@ -18,7 +18,7 @@ Los originales vectoriales están en `public/brand/`:
 - `logo-light.svg`: logotipo para fondos claros.
 - `mark.svg`: símbolo compacto para favicon, avatar o espacios pequeños.
 
-El siete geométrico representa exploración y movimiento; el pequeño acento triangular evoca avanzar. Conserva el espacio libre alrededor del símbolo (al menos el ancho del acento) y no deformes, inclines ni recolorees el logotipo. Usa `mark.svg` cuando el logotipo completo no quepa con legibilidad. No añadas el nombre o los símbolos de proveedores al logotipo.
+El símbolo abstracto representa una elección clara y el avance hacia la siguiente opción. Conserva el espacio libre alrededor del símbolo y no deformes, inclines ni recolorees el logotipo. Usa `mark.svg` cuando el logotipo completo no quepa con legibilidad. No añadas el nombre o los símbolos de proveedores al logotipo.
 
 ## Paleta
 
@@ -48,7 +48,7 @@ Habla de descubrir, explorar, elegir y adquirir. Sé específico sobre el alcanc
 
 **Sí:** «Tienda independiente»; «Adquirir ahora» (solo cuando el checkout esté habilitado); «Sin afiliación con las marcas»; «Sin cuentas compartidas».
 
-**No:** «Suscripción garantizada», «precio más barato» o «acceso exclusivo» si no se puede demostrar; nunca sugieras que 7streaming representa a una plataforma, está afiliado a ella o tiene autorización oficial sin acreditarlo. No publiques ofertas que impliquen credenciales compartidas o acceso no autorizado.
+**No:** «Suscripción garantizada», «precio más barato» o «acceso exclusivo» si no se puede demostrar; nunca sugieras que Eligeva representa a una plataforma, está afiliada a ella o tiene autorización oficial sin acreditarlo. No publiques ofertas que impliquen credenciales compartidas o acceso no autorizado.
 
 ## Piezas incluidas
 
